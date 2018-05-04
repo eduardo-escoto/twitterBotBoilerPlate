@@ -5,7 +5,6 @@
 let twit = require('twit');
 let apiData = require('./apiKeys.js');
 let Twitter = new twit(apiData);
-let lastColor;
 const tweetIntervalInMilliseconds = 1000 * 60 * 60 * 6; //setinterval uses milliseconds, this for examples is 6 hours
 
 function postTweet(tweet) {
@@ -13,7 +12,7 @@ function postTweet(tweet) {
     Twitter.post(path, tweet, (err, data, response) => console.log("Tweet Posted Successfuly"));
 }
 
-function tweetImage(path) {
+function tweetImage(status, path) {
     let fs = require('fs');
     const image_path = path;//local path to image to tweet
     let b64content = fs.readFileSync(image_path, {
@@ -23,7 +22,7 @@ function tweetImage(path) {
         media_data: b64content
     }, (err, data, response) => {
         media_ids = new Array(data.media_id_string);
-        const tweetData = generateTweetData(media_ids);
+        const tweetData = generateImageTweetData(status, media_ids);
         console.log("Tweeting the image: " + path);
         postTweet(tweetData);
     });
@@ -40,9 +39,25 @@ function generateTextTweetData(status) {
         status
     }
 }
+function exampleTweetCreator() {
+    const tweetText = "my quote";
+    const tweet = generateTextTweetData(tweetText);
+    postTweet(tweet);
+}
+function exampleImageTweetCreator() {
+    const tweetText = "my quote";
+    const imgPath = "./myimg.jpg"
+    tweetImage(tweetImage, imgPath);
+}
+function startTweetCycles() {
+    console.log(`Starting the cycle.`)
+    setInterval(() => {
+        console.log("Running next cycle...");
+        //put tweet generating function here. 
+        //for example a function that gathers quotes off the internet or reads in quotes from a database
+        exampleTweetCreator();
+        exampleImageTweetCreator();
+    }, tweetIntervalInMilliseconds);
+}
 
-console.log(`Starting the cycle.`)
-setInterval(() => {
-    console.log("Running next cycle...");
-
-}, tweetIntervalInMilliseconds);
+startTweetCycles();
