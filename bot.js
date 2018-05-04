@@ -50,7 +50,9 @@ function exampleImageTweetCreator() {
     tweetImage(tweetImage, imgPath);
 }
 function startTweetCycles() {
-    console.log(`Starting the cycle.`)
+    console.log(`Starting the cycle.`);
+    exampleTweetCreator();
+    exampleImageTweetCreator(); //runs them once before starting the cycle
     setInterval(() => {
         console.log("Running next cycle...");
         //put tweet generating function here. 
